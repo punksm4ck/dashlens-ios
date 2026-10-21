@@ -1,5 +1,8 @@
 # DashLens for iPhone (v4.1)
 
+**Testing the iPhone build? Start here: [TESTER-GUIDE.md](TESTER-GUIDE.md)**
+
+
 Offer analyzer, mileage log, earnings, expenses and tax estimates for DoorDash Dashers, ported from the Android app.
 Everything stays on the phone. No account, no servers, no analytics.
 
