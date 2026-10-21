@@ -1,0 +1,45 @@
+name: DashLens
+options:
+  bundleIdPrefix: app.dashlens
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    TARGETED_DEVICE_FAMILY: "1"
+    MARKETING_VERSION: "4.1"
+    CURRENT_PROJECT_VERSION: "5"
+targets:
+  DashLens:
+    type: application
+    platform: iOS
+    sources:
+      - path: DashLens
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.dashlens
+        PRODUCT_NAME: DashLens
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: NO
+    info:
+      path: DashLens/Info.plist
+      properties:
+        CFBundleDisplayName: DashLens
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - location
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
+        ITSAppUsesNonExemptEncryption: false
+        NSLocationWhenInUseUsageDescription: DashLens measures the miles you drive during a shift.
+        NSLocationAlwaysAndWhenInUseUsageDescription: DashLens keeps measuring miles with the screen off or while another app (like Dasher) is open. Location never leaves your phone.
+        NSCameraUsageDescription: Take a photo of a receipt to attach to an expense.
