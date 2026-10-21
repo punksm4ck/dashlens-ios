@@ -2,7 +2,6 @@
 
 **Testing the iPhone build? Start here: [TESTER-GUIDE.md](TESTER-GUIDE.md)**
 
-
 Offer analyzer, mileage log, earnings, expenses and tax estimates for DoorDash Dashers, ported from the Android app.
 Everything stays on the phone. No account, no servers, no analytics.
 
@@ -33,9 +32,33 @@ Minimum is **iOS 17.0**, so it also installs on iPhone 12 and newer. It runs on 
 
 ---
 
+## Sharing with testers (QR codes)
+
+Repo: https://github.com/punksm4ck/dashlens-ios (mirror: https://git.punksm4ck.com/punksm4ck/dashlens-ios)
+
+| QR code | Opens | Send it to |
+|---|---|---|
+| `Dashlens-IOS-QR.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest : the **iOS release page** with the "Start here: Tester guide" link, `DashLens-4.1-unsigned.ipa` and `TESTER-GUIDE.md` | iPhone testers |
+| `dashlens-APK-qr.png` | https://github.com/punksm4ck/dashlens/releases/latest/download/DashLens.apk : direct download of the **Android** app | Android testers |
+
+How an iPhone tester uses it:
+1. Scan the iOS QR on their phone and read `TESTER-GUIDE.md` (install steps and what to test).
+2. Get `DashLens-4.1-unsigned.ipa` onto a **Mac or PC**: open the same link on the computer, or AirDrop / email the file to themselves. An iPhone cannot install the file directly; it has to be signed on a computer first.
+3. Sign and install it with Sideloadly (steps in the guide and in [Step 2](#step-2-install-on-your-iphone-no-jailbreak) below).
+
+Notes:
+- The iOS QR points at `releases/latest`, so it keeps working when you publish a newer release.
+- Do not send the Android QR to iPhone users: an APK cannot be installed on an iPhone.
+- A direct `.ipa` link (`.../releases/latest/download/DashLens-4.1-unsigned.ipa`) skips the instructions, so use it only for someone who already has the guide. It stops working if a new release changes the file name.
+- Scan any QR with your own phone before sending it.
+
+To publish a new build: `gh release create vX.Y-ios DashLens-X.Y-unsigned.ipa --notes "..."`, attach `TESTER-GUIDE.md` with `gh release upload`, and push to both remotes (`git push origin main && git push gitea main`).
+
+---
+
 ## Step 1. Get the app file (.ipa)
 
-You cannot build an iPhone app on Windows or Linux, so GitHub builds it on a free Mac in the cloud (the same way your Android APK is built).
+The ready-made `.ipa` is on the [release page](https://github.com/punksm4ck/dashlens-ios/releases/latest). To build your own: an iPhone app can't be built on Windows or Linux, so either use a Mac (`xcodegen generate`, then the `xcodebuild` command in the workflow file) or let GitHub build it on a free Mac in the cloud, as below.
 
 1. Create a new GitHub repository (**public** is simplest: macOS build minutes are free for public repos; on a private repo they cost 10x and the free allowance runs out fast).
 2. Put the contents of this folder at the **root** of that repo, including the hidden `.github` folder. The easiest reliable way is Git or GitHub Desktop. If you use the web uploader and the `.github` folder doesn't come across, use *Add file > Create new file*, type `.github/workflows/build-ios.yml` as the name, and paste in that file.
