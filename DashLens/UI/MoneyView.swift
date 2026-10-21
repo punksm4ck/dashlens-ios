@@ -303,10 +303,11 @@ struct MoneyView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 Text(Finance.quartersText(y)).font(.system(size: 11, design: .monospaced)).foregroundColor(Theme.text)
             }
-            Caption("Due dates move to the next business day when they land on a weekend; holidays are not accounted for. Method in use: "
-                    + (Prefs.bool("method_actual", false) ? "actual vehicle expenses" : "standard mileage rate")
-                    + ", miles basis: " + (Prefs.bool("basis_online", false) ? "all online miles" : "on-order miles")
-                    + ". Change these in Settings. Under the standard rate, gas, maintenance, car washes and insurance are not deducted again; tolls and parking still are.")
+            let methodText = Prefs.bool("method_actual", false) ? "actual vehicle expenses" : "standard mileage rate"
+            let basisText = Prefs.bool("basis_online", false) ? "all online miles" : "on-order miles"
+            Caption(cat("Due dates move to the next business day when they land on a weekend; holidays are not accounted for. Method in use: ",
+                        methodText, ", miles basis: ", basisText,
+                        ". Change these in Settings. Under the standard rate, gas, maintenance, car washes and insurance are not deducted again; tolls and parking still are."))
         }
         .card()
         VStack(alignment: .leading, spacing: 8) {

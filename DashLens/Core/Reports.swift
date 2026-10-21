@@ -81,8 +81,10 @@ enum Reports {
         let prefix = "\(r.from.year)-"
         for d in r.rows {
             let key = d.key.hasPrefix(prefix) ? String(d.key.dropFirst(prefix.count)) : d.key
-            sb += key.padR(8) + " " + mi(d.orderM).padL(7) + " " + hrs(d.orderMs).padL(7) + " "
-                + mi(d.orderM + d.idleM).padL(7) + " " + hrs(d.orderMs + d.idleMs).padL(7) + "\n"
+            let totalM = d.orderM + d.idleM
+            let totalMs = d.orderMs + d.idleMs
+            sb += cat(key.padR(8), " ", mi(d.orderM).padL(7), " ", hrs(d.orderMs).padL(7), " ",
+                      mi(totalM).padL(7), " ", hrs(totalMs).padL(7), "\n")
         }
         return sb
     }

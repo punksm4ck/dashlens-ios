@@ -154,3 +154,7 @@ func onMainSync(_ f: () -> Void) {
 extension Notification.Name {
     static let dashLensDataChanged = Notification.Name("dashLensDataChanged")
 }
+
+/// Joins strings. Use this instead of a long `a + b + c + ...` chain: every argument is type-checked on its own, so
+/// the compiler cannot hit "unable to type-check this expression in reasonable time" (it did on GitHub's runner).
+func cat(_ parts: String...) -> String { parts.joined() }

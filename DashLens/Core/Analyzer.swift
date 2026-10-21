@@ -103,7 +103,9 @@ enum Analyzer {
             driveMin = o.miles / max(p("offer_speed_mph"), 5.0) * 60.0
             source = "estimated at \(Prefs.fmt(p("offer_speed_mph"))) mph"
         }
-        var orderMin = driveMin + wait + extra + p("dropoff_min")
+        var orderMin = driveMin + wait
+        orderMin += extra
+        orderMin += p("dropoff_min")
 
         // merchant history overrides the model once you have two completed orders there
         var merchantLine = ""

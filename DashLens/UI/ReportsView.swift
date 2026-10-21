@@ -25,9 +25,10 @@ struct ReportsView: View {
                 Text("\(Reports.mi(t.idleM)) mi   \(Reports.dur(t.idleMs))").font(.title3.bold()).foregroundColor(Theme.text)
                 Caption("Online total (includes on-order)")
                 Text("\(Reports.mi(t.onlineM)) mi   \(Reports.dur(t.onlineMs))").font(.title3.bold()).foregroundColor(Theme.text)
-                Caption("Est. deduction at $\(Prefs.fmt(rate))/mi:  on-order " + Fmt.f("$%.2f", t.orderM / 1609.344 * rate)
-                        + "  |  all online " + Fmt.f("$%.2f", t.onlineM / 1609.344 * rate)
-                        + ". Estimate only. Ask a tax professional which miles you can claim.")
+                let dedOrder = Fmt.f("$%.2f", t.orderM / 1609.344 * rate)
+                let dedOnline = Fmt.f("$%.2f", t.onlineM / 1609.344 * rate)
+                Caption(cat("Est. deduction at $\(Prefs.fmt(rate))/mi:  on-order ", dedOrder, "  |  all online ", dedOnline,
+                            ". Estimate only. Ask a tax professional which miles you can claim."))
             }
             .card()
 
@@ -39,8 +40,11 @@ struct ReportsView: View {
                 let prefix = "\(r.from.year)-"
                 ForEach(r.rows, id: \.key) { d in
                     let key = d.key.hasPrefix(prefix) ? String(d.key.dropFirst(prefix.count)) : d.key
-                    Text(key.padR(8) + Reports.mi(d.orderM).padL(6) + " " + Reports.hrs(d.orderMs).padL(5) + "   "
-                         + Reports.mi(d.orderM + d.idleM).padL(6) + " " + Reports.hrs(d.orderMs + d.idleMs).padL(5))
+                    let totalM = d.orderM + d.idleM
+                    let totalMs = d.orderMs + d.idleMs
+                    let line = cat(key.padR(8), Reports.mi(d.orderM).padL(6), " ", Reports.hrs(d.orderMs).padL(5), "   ",
+                                   Reports.mi(totalM).padL(6), " ", Reports.hrs(totalMs).padL(5))
+                    Text(line)
                         .font(.system(size: 12, design: .monospaced)).foregroundColor(Theme.text)
                 }
             }

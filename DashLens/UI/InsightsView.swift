@@ -47,8 +47,8 @@ struct InsightsView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Your real pace").font(.headline).foregroundColor(Theme.text)
                 if let c = cal {
-                    Caption("DashLens has learned that you drive about " + Fmt.f("%.0f", c.mph) + " mph on orders (" + Fmt.f("%.1f", c.minPerMi)
-                            + " min per mile), from \(c.n) completed orders. Offer times now use your pace instead of a guess.")
+                    Caption(cat("DashLens has learned that you drive about ", Fmt.f("%.0f", c.mph), " mph on orders (", Fmt.f("%.1f", c.minPerMi),
+                                " min per mile), from \(c.n) completed orders. Offer times now use your pace instead of a guess."))
                 } else {
                     Caption("Dasher does not show trip time, so DashLens estimates it. Complete 5 orders with a shift running (mark On order / Order done) and it learns your real pace automatically.")
                 }
@@ -64,7 +64,7 @@ struct InsightsView: View {
                         let isBest = best != nil && best!.key == w.key
                         let hrs = Fmt.f("%4.1f h", w.minutes / 60.0)
                         let rate = w.minutes >= 30 ? Fmt.f("$%.0f/hr", w.perHr) : "-"
-                        Text(Insights.days[w.key] + "   " + hrs + "   " + Finance.money(w.pay).padL(9) + "   " + rate)
+                        Text(cat(Insights.days[w.key], "   ", hrs, "   ", Finance.money(w.pay).padL(9), "   ", rate))
                             .font(.system(size: 12, weight: isBest ? .bold : .regular, design: .monospaced))
                             .foregroundColor(isBest ? Theme.green : Theme.text)
                     }
@@ -78,7 +78,7 @@ struct InsightsView: View {
                     Caption("Needs more shifts: a slot needs an hour online across the period.")
                 } else {
                     ForEach(top, id: \.key) { s in
-                        Text(Insights.slotLabel(s.key) + "   " + Fmt.f("$%.0f/hr", s.perHr) + "   (" + Fmt.f("%.1f", s.minutes / 60.0) + " h)")
+                        Text(cat(Insights.slotLabel(s.key), "   ", Fmt.f("$%.0f/hr", s.perHr), "   (", Fmt.f("%.1f", s.minutes / 60.0), " h)"))
                             .font(.system(size: 12, design: .monospaced)).foregroundColor(Theme.text)
                     }
                 }
