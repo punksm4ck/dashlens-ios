@@ -11,7 +11,8 @@ Everything stays on the phone. No account, no servers, no analytics.
 > 2. **Online / On order is manual.** Android guesses it from Dasher's screens. On iPhone you tap **On order** when you accept (or Back Tap "I Accepted the Offer") and **Online** when the order is done. DashLens still learns your real order times and merchant history from that.
 > 3. **No auto-stop, no "Dasher looks active" prompt**, for the same reason.
 > 4. **Weekly files are saved when you open the app**, not at Sunday 23:59 (iOS can't run code on a timer). A Sunday reminder notification tells you to open it.
-> 5. **This code has not been compiled or run on a device.** It was written without access to Xcode or macOS. The first GitHub build is its first compile. If it fails, see [If the build fails](#if-the-build-fails).
+> 5. **This is an early test build.** It compiles on a Mac and on GitHub's macOS runner, but reading real Dasher offer screens is still being tested. Report anything odd, with the text DashLens read (Home > Test with a saved Dasher screenshot > Copy text).
+> 6. **There is no login or sign-up in DashLens.** The only Apple ID prompt is in the sideloading tool (Sideloadly / AltStore), which uses your Apple ID to sign the app.
 
 Everything else matches the Android app: same verdict math, same filters and presets, same merchant and pace learning, same earnings / expenses / receipts / tax view, insights, reports and CSV exports.
 
@@ -36,10 +37,13 @@ Minimum is **iOS 17.0**, so it also installs on iPhone 12 and newer. It runs on 
 
 Repo: https://github.com/punksm4ck/dashlens-ios (mirror: https://git.punksm4ck.com/punksm4ck/dashlens-ios)
 
-| QR code | Opens | Send it to |
+| QR code (in this repo) | Opens | Send it to |
 |---|---|---|
-| `Dashlens-IOS-QR.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest : the **iOS release page** with the "Start here: Tester guide" link, `DashLens-4.1-unsigned.ipa` and `TESTER-GUIDE.md` | iPhone testers |
-| `dashlens-APK-qr.png` | https://github.com/punksm4ck/dashlens/releases/latest/download/DashLens.apk : direct download of the **Android** app | Android testers |
+| `dashlens-qr.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest : the **iOS release page** with `DashLens-4.1-unsigned.ipa` | iPhone testers |
+| `qr-guide.png` | https://github.com/punksm4ck/dashlens-ios/blob/main/TESTER-GUIDE.md : the **tester guide** | iPhone testers who need the steps |
+| `qr-ipa.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest/download/DashLens-4.1-unsigned.ipa : direct download of the `.ipa` | Someone who already has the guide |
+
+The Android app has its own QR in the Android repo (`docs/install-qr.png`, linking to https://github.com/punksm4ck/dashlens/releases/latest/download/DashLens.apk).
 
 How an iPhone tester uses it:
 1. Scan the iOS QR on their phone and read `TESTER-GUIDE.md` (install steps and what to test).
@@ -49,7 +53,8 @@ How an iPhone tester uses it:
 Notes:
 - The iOS QR points at `releases/latest`, so it keeps working when you publish a newer release.
 - Do not send the Android QR to iPhone users: an APK cannot be installed on an iPhone.
-- A direct `.ipa` link (`.../releases/latest/download/DashLens-4.1-unsigned.ipa`) skips the instructions, so use it only for someone who already has the guide. It stops working if a new release changes the file name.
+- The `.ipa` link in `qr-ipa.png` skips the instructions, so use it only for someone who already has the guide. It stops working if a new release changes the file name.
+- Downloading from the release page needs **no GitHub account**. (A file from a GitHub *Actions* run does, so always hand testers the release link, never an Actions artifact.)
 - Scan any QR with your own phone before sending it.
 
 To publish a new build: `gh release create vX.Y-ios DashLens-X.Y-unsigned.ipa --notes "..."`, attach `TESTER-GUIDE.md` with `gh release upload`, and push to both remotes (`git push origin main && git push gitea main`).
@@ -113,6 +118,7 @@ Sign the same .ipa with Sideloadly or AltStore using the paid account for one-ye
 - **"Untrusted Developer" / app won't open:** do the Trust step (VPN & Device Management).
 - **App opens, then closes immediately, or says the app is unavailable:** it expired. Refresh it (Route A step 6 / AltStore refresh).
 - **"Maximum number of apps" or "App ID limit":** a free Apple ID allows 3 active sideloaded apps and a limited number of new app IDs per week. Remove another sideloaded app, or wait a few days.
+- **"It won't let me log in / sign up":** DashLens has no accounts. The Apple ID prompt comes from Sideloadly or AltServer. Check the Apple ID and password, enter the 6-digit code quickly, use an Apple ID that has been signed in on an iPhone before (brand-new ones can be refused), and on Windows install iTunes and iCloud from apple.com, not the Microsoft Store. The full table is in [TESTER-GUIDE.md](TESTER-GUIDE.md).
 - **Apple ID sign-in fails in the tool:** check you're on the latest version of Sideloadly/AltServer. Tools sometimes need an update after a new iOS release.
 - **Reinstalling:** installing the new .ipa *over* the old one keeps your data. **Deleting the app erases the database.** Export your reports regularly (see below).
 

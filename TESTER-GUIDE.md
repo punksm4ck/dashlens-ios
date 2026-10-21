@@ -6,37 +6,67 @@ Thanks for testing. This is an early test build, so please report anything odd. 
 https://github.com/punksm4ck/dashlens-ios/releases/latest
 and download **DashLens-4.1-unsigned.ipa** (under "Assets").
 
+**DashLens itself has no login and no sign-up.** There is no account to create. The only place you type an Apple ID and password is **Sideloadly** (the free tool on your computer that signs the app so your iPhone will run it). If something is asking you to "log in or sign up" and you are not inside Sideloadly, stop and send me a screenshot.
+
 **What you need**
 - An iPhone on iOS 17 or newer (iPhone 12 and newer; built for the iPhone 15 to 18 families)
 - A Mac or a Windows PC, and the cable that charges your iPhone
-- A free Apple ID (a spare one is fine; it is only used to sign the app)
-- About 10 minutes
+- An Apple ID that you have already used to sign in on an iPhone or iPad (a spare one is fine; it is only used to sign the app). A brand-new Apple ID that has never been used on a device may be refused.
+- About 15 minutes
+
+**How it works, in one line:** an iPhone cannot install a downloaded app file by itself. You download the `.ipa` on your computer, and Sideloadly signs it with your Apple ID and pushes it to the phone over the cable.
 
 ---
 
 ## Part 1. Install
 
-### Step 1: Install Sideloadly on your computer
-1. Go to **sideloadly.io** and download Sideloadly for your Mac or Windows PC.
-2. **Windows only:** also install **iTunes** from apple.com (the downloadable version, *not* the Microsoft Store one). Sideloadly's download page lists current requirements; follow it if it says anything different.
+### Step 1: Get the app file on your computer
+Open https://github.com/punksm4ck/dashlens-ios/releases/latest on the **computer**, scroll to **Assets**, and click **DashLens-4.1-unsigned.ipa**. No GitHub account is needed. If your browser saves it with an extra `.zip` on the end, rename it so it ends in `.ipa`.
 
-### Step 2: Sign and install the app
-1. Plug your iPhone into the computer. On the phone, tap **Trust This Computer** and enter your passcode.
-2. Open Sideloadly. Your iPhone should appear at the top.
-3. Drag **DashLens-4.1-unsigned.ipa** into Sideloadly.
-4. Type your Apple ID email, then click **Start**. Enter your password and the 6-digit 2-factor code when asked.
+### Step 2: Install the tools
+**Windows PC**
+1. Install **iTunes** and **iCloud** from **apple.com** (search "download iTunes for Windows"). Use Apple's own website installers, **not** the Microsoft Store versions: Sideloadly cannot talk to the phone through the Store versions.
+2. Install **Sideloadly** from **sideloadly.io**.
+3. Restart the PC if the installers ask you to.
+
+**Mac**
+1. Install **Sideloadly** from **sideloadly.io** (no iTunes needed).
+
+### Step 3: Connect the phone
+1. Plug the iPhone into the computer with the cable.
+2. On the phone, tap **Trust This Computer** and enter your passcode.
+3. On Windows, if iTunes opens, let it see the phone once, then close it.
+
+### Step 4: Sign and install
+1. Open **Sideloadly**. Your iPhone should appear in the device box at the top. If it does not, see "If it will not work" below.
+2. Drag **DashLens-4.1-unsigned.ipa** onto the Sideloadly window.
+3. Type your **Apple ID email** and click **Start**.
+4. Enter your Apple ID **password** when Sideloadly asks. Then a **6-digit code** appears on your iPhone (or another Apple device signed in to that Apple ID): type it in quickly.
 5. Wait for "Done". The DashLens icon (a white ring with a green dot) is now on your home screen.
 
-### Step 3: Trust the app and turn on Developer Mode
+### Step 5: Trust the app and turn on Developer Mode
 1. On the iPhone: **Settings > General > VPN & Device Management**. Tap your Apple ID under *Developer App*, then **Trust**.
 2. **Settings > Privacy & Security**, scroll to the bottom, tap **Developer Mode**, switch it **on**, then tap **Restart**. After the restart, tap **Turn On** and enter your passcode.
-   - If you don't see Developer Mode, it appears only after an app has been sideloaded. Do Step 2 first, then look again.
+   - If you don't see Developer Mode, it appears only after an app has been sideloaded. Do Step 4 first, then look again.
 3. Open DashLens.
 
+### If it will not work
+Send me a **screenshot of the whole Sideloadly window** (including the log at the bottom) and tell me which step you were on. Common causes:
+
+| What you see | What to try |
+|---|---|
+| iPhone does not appear in Sideloadly | Try another cable or USB port. Tap Trust on the phone. On Windows, check iTunes and iCloud are the **apple.com** versions, not the Microsoft Store ones. |
+| Apple ID or password rejected | Re-type it, and check you can sign in to your Apple account page in a browser (account.apple.com). If you have an app-specific password, do not use it here. |
+| Asks for the 6-digit code twice, or "unknown error" on the code | Wait for a fresh code on the phone and enter it right away. Make sure the phone shows the code prompt and is not locked. |
+| "Maximum App ID limit reached" | A free Apple ID can only create a few new app IDs per week. Wait about a week, or use a different Apple ID. |
+| Apple ID refused for development, or a brand-new Apple ID | Use an Apple ID that has been signed in on an iPhone for a while. |
+| "Guru Meditation" and a long code | Update Sideloadly, pause your antivirus for a minute, re-plug the phone, try again. If it repeats, send me the code. |
+| The app icon appears but will not open | Do Step 5 (Trust, then Developer Mode). |
+
 ### Things to know
-- **It expires after 7 days.** Free Apple IDs only sign apps for a week. When DashLens stops opening, repeat Part 1 Step 2 with the same file. **Do not delete the app first**, because deleting it erases your data.
+- **It expires after 7 days.** Free Apple IDs only sign apps for a week. When DashLens stops opening, repeat Step 4 with the same file. **Do not delete the app first**, because deleting it erases your data.
 - A free Apple ID allows 3 sideloaded apps at a time.
-- If Sideloadly shows a sign-in error, update Sideloadly and try again. After a new iPhone software update, these tools can lag by a few days.
+- After a new iPhone software update, these tools can lag by a few days.
 
 ---
 
