@@ -3,6 +3,14 @@ name: Build iOS IPA (unsigned)
 on:
   push:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to publish (e.g. v4.2.0-ios). Leave empty to only build."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -31,14 +39,19 @@ jobs:
 
       - name: Package unsigned IPA
         run: |
+          VER=$(awk -F'"' '/MARKETING_VERSION/ {print $2; exit}' project.yml)
           rm -rf Payload && mkdir Payload
           cp -R build/Build/Products/Release-iphoneos/DashLens.app Payload/
-          zip -qry DashLens-4.1-unsigned.ipa Payload
+          zip -qry "DashLens-$VER-unsigned.ipa" Payload
+          cp "DashLens-$VER-unsigned.ipa" DashLens-unsigned.ipa
+          echo "VER=$VER" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v4
         with:
           name: DashLens-iOS-ipa
-          path: DashLens-4.1-unsigned.ipa
+          path: |
+            DashLens-*-unsigned.ipa
+            DashLens-unsigned.ipa
 
       - name: Keep the build log if something failed
         if: failure()
@@ -46,3 +59,13 @@ jobs:
         with:
           name: build-log
           path: build.log
+
+      - name: Publish release assets
+        if: ${{ inputs.tag != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          shasum -a 256 "DashLens-$VER-unsigned.ipa" DashLens-unsigned.ipa > SHA256SUMS.txt
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "DashLens for iPhone $TAG" --generate-notes
+          gh release upload "$TAG" "DashLens-$VER-unsigned.ipa" DashLens-unsigned.ipa SHA256SUMS.txt TESTER-GUIDE.md --clobber

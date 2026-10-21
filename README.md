@@ -1,4 +1,8 @@
-# DashLens for iPhone (v4.1)
+# DashLens for iPhone (v4.2.0)
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![Platform: iOS 17+](https://img.shields.io/badge/platform-iOS%2017%2B-lightgrey.svg)
+![Language: Swift](https://img.shields.io/badge/language-Swift-orange.svg)
 
 **Testing the iPhone build? Start here: [TESTER-GUIDE.md](TESTER-GUIDE.md)**
 
@@ -14,7 +18,15 @@ Everything stays on the phone. No account, no servers, no analytics.
 > 5. **This is an early test build.** It compiles on a Mac and on GitHub's macOS runner, but reading real Dasher offer screens is still being tested. Report anything odd, with the text DashLens read (Home > Test with a saved Dasher screenshot > Copy text).
 > 6. **There is no login or sign-up in DashLens.** The only Apple ID prompt is in the sideloading tool (Sideloadly / AltStore), which uses your Apple ID to sign the app.
 
-Everything else matches the Android app: same verdict math, same filters and presets, same merchant and pace learning, same earnings / expenses / receipts / tax view, insights, reports and CSV exports.
+Everything else matches Android 4.2.0: the same verdict math (itemized gas and wear, the shop & deliver time model, "+" minimum pay), the same filters and presets, the same merchant and pace learning, the same earnings / expenses / receipts / tax view, insights, reports and CSV exports, and the same shareable offer card.
+
+## What's new in 4.2.0
+- **Line-by-line math on every offer**: gas (miles ÷ mpg × gas price), wear and tear, net pay, a time breakdown and the miles counted. Switch it off in Settings for the short reasons.
+- **Shop & deliver offers**: the item count is read from the offer, and shopping time per item plus checkout time per store replaces the wait at the store.
+- **"+" pay**: an offer shown as `$22.00+` is graded at that minimum and marked.
+- **Share card**: tap SHARE on a row in Offers to make a picture of the grade and share it. Settings > Diagnostics has a test button.
+- **Load typical Dasher assumptions**: one button in Settings fills gas, mpg, wear, shopping, checkout, drop-off, return-miles and speed.
+- Your existing history and settings are kept. The default vehicle cost is now gas + wear (about $0.33/mi) instead of a flat $0.30/mi; turn "itemize" off in Settings to keep the flat rate.
 
 ---
 
@@ -39,15 +51,15 @@ Repo: https://github.com/punksm4ck/dashlens-ios (mirror: https://git.punksm4ck.c
 
 | QR code (in this repo) | Opens | Send it to |
 |---|---|---|
-| `dashlens-qr.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest : the **iOS release page** with `DashLens-4.1-unsigned.ipa` | iPhone testers |
+| `dashlens-qr.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest : the **iOS release page** with `DashLens-unsigned.ipa` | iPhone testers |
 | `qr-guide.png` | https://github.com/punksm4ck/dashlens-ios/blob/main/TESTER-GUIDE.md : the **tester guide** | iPhone testers who need the steps |
-| `qr-ipa.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest/download/DashLens-4.1-unsigned.ipa : direct download of the `.ipa` | Someone who already has the guide |
+| `qr-ipa.png` | https://github.com/punksm4ck/dashlens-ios/releases/latest/download/DashLens-unsigned.ipa : direct download of the `.ipa` | Someone who already has the guide |
 
 The Android app has its own QR in the Android repo (`docs/install-qr.png`, linking to https://github.com/punksm4ck/dashlens/releases/latest/download/DashLens.apk).
 
 How an iPhone tester uses it:
 1. Scan the iOS QR on their phone and read `TESTER-GUIDE.md` (install steps and what to test).
-2. Get `DashLens-4.1-unsigned.ipa` onto a **Mac or PC**: open the same link on the computer, or AirDrop / email the file to themselves. An iPhone cannot install the file directly; it has to be signed on a computer first.
+2. Get `DashLens-unsigned.ipa` onto a **Mac or PC**: open the same link on the computer, or AirDrop / email the file to themselves. An iPhone cannot install the file directly; it has to be signed on a computer first.
 3. Sign and install it with Sideloadly (steps in the guide and in [Step 2](#step-2-install-on-your-iphone-no-jailbreak) below).
 
 Notes:
@@ -57,7 +69,7 @@ Notes:
 - Downloading from the release page needs **no GitHub account**. (A file from a GitHub *Actions* run does, so always hand testers the release link, never an Actions artifact.)
 - Scan any QR with your own phone before sending it.
 
-To publish a new build: `gh release create vX.Y-ios DashLens-X.Y-unsigned.ipa --notes "..."`, attach `TESTER-GUIDE.md` with `gh release upload`, and push to both remotes (`git push origin main && git push gitea main`).
+To publish a new build: bump `MARKETING_VERSION` in `project.yml`, push to both remotes, then run `gh workflow run build-ios.yml --repo punksm4ck/dashlens-ios --ref main -f tag=vX.Y.Z-ios`. The workflow builds the unsigned `.ipa` and attaches `DashLens-unsigned.ipa`, `DashLens-<version>-unsigned.ipa`, `SHA256SUMS.txt` and `TESTER-GUIDE.md` to that release.
 
 ---
 
@@ -69,12 +81,12 @@ The ready-made `.ipa` is on the [release page](https://github.com/punksm4ck/dash
 2. Put the contents of this folder at the **root** of that repo, including the hidden `.github` folder. The easiest reliable way is Git or GitHub Desktop. If you use the web uploader and the `.github` folder doesn't come across, use *Add file > Create new file*, type `.github/workflows/build-ios.yml` as the name, and paste in that file.
    - To put it inside your existing Android repo instead, place the folder as `ios/`, move `build-ios.yml` into the repo's `.github/workflows/`, and add `working-directory: ios` under each `run:` step.
 3. Open the **Actions** tab. The workflow **Build iOS IPA (unsigned)** runs on every push, or click **Run workflow**. It takes roughly 5 to 10 minutes.
-4. When it finishes, open the run and download the **DashLens-iOS-ipa** artifact (a zip). Unzip it to get `DashLens-4.1-unsigned.ipa`.
+4. When it finishes, open the run and download the **DashLens-iOS-ipa** artifact (a zip). Unzip it to get `DashLens-unsigned.ipa`.
 
 The file is *unsigned* on purpose: Step 2 signs it with your own Apple ID.
 
 ### If the build fails
-Open the failed run and download the **build-log** artifact, or copy the red error lines from the log. Send them back to Claude and the fix is usually a one-line change. First builds of new code commonly need one or two rounds.
+Open the failed run and download the **build-log** artifact, or copy the red error lines from the log. Attach it to a new issue in this repo (see [CONTRIBUTING.md](CONTRIBUTING.md)) and it will get looked at.
 
 ---
 
@@ -90,7 +102,7 @@ Apple only runs apps that are signed. Without the App Store, you sign the .ipa y
 ### Route A: Sideloadly (recommended, Windows or Mac)
 1. Install **Sideloadly** from sideloadly.io. On Windows it also needs **iTunes** installed from apple.com (the downloadable version, *not* the Microsoft Store one). Follow the requirements on the Sideloadly download page, as they change.
 2. Connect the iPhone with a cable. Tap **Trust This Computer** on the phone and enter your passcode.
-3. Open Sideloadly. Drag `DashLens-4.1-unsigned.ipa` onto it, enter your Apple ID, and click **Start**. Enter your password and the 2-factor code when asked.
+3. Open Sideloadly. Drag `DashLens-unsigned.ipa` onto it, enter your Apple ID, and click **Start**. Enter your password and the 2-factor code when asked.
 4. On the phone: **Settings > General > VPN & Device Management**, tap your Apple ID under *Developer App*, then **Trust**.
 5. Turn on [Developer Mode](#developer-mode) if you haven't, then open DashLens.
 6. **Every 7 days:** connect the phone, open Sideloadly and install the same .ipa again. This refreshes the signature **and keeps your data**. Do not delete the app first.
@@ -99,7 +111,7 @@ Apple only runs apps that are signed. Without the App Store, you sign the .ipa y
 1. Install **AltServer** on your Windows PC or Mac from altstore.io. On Windows it needs iTunes and iCloud from apple.com, not the Microsoft Store.
 2. Connect the phone, click the AltServer icon in the system tray / menu bar > **Install AltStore** > your iPhone, and sign in with your Apple ID.
 3. Trust the profile on the phone (same as Route A, step 4). Open **AltStore**.
-4. Send `DashLens-4.1-unsigned.ipa` to the phone (AirDrop, iCloud Drive or the Files app), open AltStore > **My Apps** > **+** and pick the file.
+4. Send `DashLens-unsigned.ipa` to the phone (AirDrop, iCloud Drive or the Files app), open AltStore > **My Apps** > **+** and pick the file.
 5. Leave AltServer running on your computer, on the same Wi-Fi as the phone. AltStore refreshes DashLens in the background before the 7 days are up.
 
 ### Route C: SideStore (refreshes from the phone itself)
@@ -176,3 +188,12 @@ Test it without a real offer: Home > **Test with a saved Dasher screenshot**, an
 | `DashLens/Core` | Ported logic: parser, analyzer, finance/tax, reports, insights, SQLite database, GPS tracker, OCR engine |
 | `DashLens/Intents` | The Shortcuts actions (Analyze Dasher Offer, Start/Stop Shift, I Accepted, Order Done, ...) |
 | `DashLens/UI` | SwiftUI screens (Home, Offers, Money, Insights, Reports, Settings, Welcome) |
+
+## Documentation
+- [Tester guide](TESTER-GUIDE.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+
+## License
+Released under the [MIT License](LICENSE).

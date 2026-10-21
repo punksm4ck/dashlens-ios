@@ -3,6 +3,7 @@ import SwiftUI
 struct OffersView: View {
     @EnvironmentObject var app: AppState
     @State private var tab = 0
+    @State private var sharing: SharePayload?
 
     private func nextOutcome(_ o: String) -> String { o == "ACCEPTED" ? "PASSED" : "ACCEPTED" }
 
@@ -24,6 +25,9 @@ struct OffersView: View {
             if tab == 0 { history(db.offers(now - 365 * 86_400_000, now + 1000, limit: 200)) }
             else { merchants(db.merchants(now - 365 * 86_400_000, now + 1000)) }
         }
+        .sheet(item: $sharing) { payload in
+            ActivityView(items: [payload.url]).presentationDetents([.medium, .large])
+        }
     }
 
     private func extraLine(_ o: OfferRow) -> String {
@@ -36,7 +40,7 @@ struct OffersView: View {
         if rows.isEmpty {
             Caption("Nothing logged yet. Every offer you analyze with the DashLens shortcut shows up here.")
         } else {
-            Caption("Offers you don't mark accepted within 5 minutes count as passed. Tap the tag on a row to correct it.")
+            Caption("Offers you don't mark accepted within 5 minutes count as passed. Tap the tag on a row to correct it. SHARE makes a picture card, graded again with your current settings.")
             ForEach(rows) { o in
                 VStack(alignment: .leading, spacing: 6) {
                     HStack {
@@ -47,6 +51,12 @@ struct OffersView: View {
                             Database.shared.setOutcome(o.id, nextOutcome(o.outcome))
                         } label: {
                             Pill(text: o.outcome, color: Theme.outcomeColor(o.outcome))
+                        }
+                        .buttonStyle(.plain)
+                        Button {
+                            sharing = ShareCard.payload(o)
+                        } label: {
+                            Pill(text: "SHARE", color: Theme.blue)
                         }
                         .buttonStyle(.plain)
                     }
@@ -63,7 +73,7 @@ struct OffersView: View {
         if list.isEmpty {
             Caption("Merchant history builds up as you take offers. After two completed orders at a place, DashLens uses your real times there.")
         } else {
-            let cost = Prefs.num("cost_mi")
+            let cost = Analyzer.costPerMile()
             let minHr = Prefs.num("min_hr")
             ForEach(list) { m in
                 VStack(alignment: .leading, spacing: 4) {

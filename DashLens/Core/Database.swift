@@ -49,6 +49,8 @@ struct OfferRow: Identifiable {
     var actualMi: Double = 0
     var windowMin: Double = 0
     var tipsIncl: Bool = false
+    var items: Int = 0
+    var payPlus: Bool = false
     var hasLoc: Bool { lat != 0 || lon != 0 }
 }
 
@@ -132,6 +134,16 @@ final class Database {
         _ = run("CREATE INDEX IF NOT EXISTS earning_ts ON earning(ts)", notify: false)
         _ = run("CREATE TABLE IF NOT EXISTS expense(id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER NOT NULL, amount REAL NOT NULL, category TEXT NOT NULL, note TEXT NOT NULL, receipt TEXT NOT NULL)", notify: false)
         _ = run("CREATE INDEX IF NOT EXISTS expense_ts ON expense(ts)", notify: false)
+        // 4.2.0: item count and "+" pay flag on each offer. Older installs get the columns added; no data is lost.
+        addColumn("offer", "items", "INTEGER NOT NULL DEFAULT 0")
+        addColumn("offer", "pay_plus", "INTEGER NOT NULL DEFAULT 0")
+    }
+
+    private func addColumn(_ table: String, _ column: String, _ type: String) {
+        let have: [String] = query("PRAGMA table_info(\(table))") { (r: Row) -> String in r.str(1) }
+        if !have.contains(column) {
+            _ = run("ALTER TABLE \(table) ADD COLUMN \(column) \(type)", notify: false)
+        }
     }
 
     private func bind(_ st: OpaquePointer?, _ args: [Any]) {
@@ -233,18 +245,19 @@ final class Database {
 
     // MARK: offers
 
-    private static let offerCols = "id,ts,pay,miles,minutes,pickups,verdict,net_hr,per_mile,outcome,lat,lon,merchant,actual_min,actual_mi,window_min,tips_incl"
+    private static let offerCols = "id,ts,pay,miles,minutes,pickups,verdict,net_hr,per_mile,outcome,lat,lon,merchant,actual_min,actual_mi,window_min,tips_incl,items,pay_plus"
 
     private static func readOffer(_ r: Row) -> OfferRow {
         OfferRow(id: r.i64(0), ts: r.i64(1), pay: r.dbl(2), miles: r.dbl(3), minutes: r.dbl(4), pickups: r.int(5),
                  verdict: r.str(6), netHr: r.dbl(7), perMile: r.dbl(8), outcome: r.str(9), lat: r.dbl(10), lon: r.dbl(11),
-                 merchant: r.str(12), actualMin: r.dbl(13), actualMi: r.dbl(14), windowMin: r.dbl(15), tipsIncl: r.int(16) == 1)
+                 merchant: r.str(12), actualMin: r.dbl(13), actualMi: r.dbl(14), windowMin: r.dbl(15), tipsIncl: r.int(16) == 1,
+                 items: r.int(17), payPlus: r.int(18) == 1)
     }
 
     func insertOffer(_ o: OfferRow) -> Int64 {
-        run("INSERT INTO offer(ts,pay,miles,minutes,pickups,verdict,net_hr,per_mile,outcome,lat,lon,merchant,actual_min,actual_mi,window_min,tips_incl) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        run("INSERT INTO offer(ts,pay,miles,minutes,pickups,verdict,net_hr,per_mile,outcome,lat,lon,merchant,actual_min,actual_mi,window_min,tips_incl,items,pay_plus) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [o.ts, o.pay, o.miles, o.minutes, o.pickups, o.verdict, o.netHr, o.perMile, o.outcome, o.lat, o.lon,
-             o.merchant, o.actualMin, o.actualMi, o.windowMin, o.tipsIncl ? 1 : 0])
+             o.merchant, o.actualMin, o.actualMi, o.windowMin, o.tipsIncl ? 1 : 0, o.items, o.payPlus ? 1 : 0])
     }
 
     func setOutcome(_ id: Int64, _ outcome: String) {

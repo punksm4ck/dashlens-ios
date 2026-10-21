@@ -110,7 +110,8 @@ enum OfferEngine {
         let row = OfferRow(id: 0, ts: now, pay: o.pay, miles: o.miles, minutes: r.tripMin, pickups: o.pickups,
                            verdict: r.verdict.rawValue, netHr: r.netHr, perMile: r.perMile, outcome: "PENDING",
                            lat: fix?.coordinate.latitude ?? 0, lon: fix?.coordinate.longitude ?? 0,
-                           merchant: o.merchant, actualMin: 0, actualMi: 0, windowMin: o.windowMin, tipsIncl: o.tipsIncluded)
+                           merchant: o.merchant, actualMin: 0, actualMi: 0, windowMin: o.windowMin, tipsIncl: o.tipsIncluded,
+                           items: o.items, payPlus: o.payPlus)
         let id = Database.shared.insertOffer(row)
         lastKey = key
         lastAt = now
@@ -118,9 +119,10 @@ enum OfferEngine {
         return id
     }
 
-    /// A sample like the one on the Android preview. Never written to the history.
+    /// A sample shop & deliver offer, like the Android preview. Never written to the history.
     static func sample() -> (Offer, Analysis) {
-        let o = Offer(pay: 5.0, miles: 1.4, shownMinutes: 0, windowMin: 9.0, pickups: 1, merchants: ["John's Bagel Deli"], tipsIncluded: true)
+        let o = Offer(pay: 22.0, miles: 4.7, shownMinutes: 0, windowMin: 0, pickups: 1, merchants: ["Dollar General"],
+                      tipsIncluded: false, items: 4, payPlus: true)
         return (o, Analyzer.analyze(o))
     }
 

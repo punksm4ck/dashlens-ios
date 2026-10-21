@@ -4,7 +4,7 @@ Thanks for testing. This is an early test build, so please report anything odd. 
 
 **Download:** scan the QR code, or open
 https://github.com/punksm4ck/dashlens-ios/releases/latest
-and download **DashLens-4.1-unsigned.ipa** (under "Assets").
+and download **DashLens-unsigned.ipa** (under "Assets").
 
 **DashLens itself has no login and no sign-up.** There is no account to create. The only place you type an Apple ID and password is **Sideloadly** (the free tool on your computer that signs the app so your iPhone will run it). If something is asking you to "log in or sign up" and you are not inside Sideloadly, stop and send me a screenshot.
 
@@ -21,7 +21,7 @@ and download **DashLens-4.1-unsigned.ipa** (under "Assets").
 ## Part 1. Install
 
 ### Step 1: Get the app file on your computer
-Open https://github.com/punksm4ck/dashlens-ios/releases/latest on the **computer**, scroll to **Assets**, and click **DashLens-4.1-unsigned.ipa**. No GitHub account is needed. If your browser saves it with an extra `.zip` on the end, rename it so it ends in `.ipa`.
+Open https://github.com/punksm4ck/dashlens-ios/releases/latest on the **computer**, scroll to **Assets**, and click **DashLens-unsigned.ipa**. No GitHub account is needed. If your browser saves it with an extra `.zip` on the end, rename it so it ends in `.ipa`.
 
 ### Step 2: Install the tools
 **Windows PC**
@@ -39,7 +39,7 @@ Open https://github.com/punksm4ck/dashlens-ios/releases/latest on the **computer
 
 ### Step 4: Sign and install
 1. Open **Sideloadly**. Your iPhone should appear in the device box at the top. If it does not, see "If it will not work" below.
-2. Drag **DashLens-4.1-unsigned.ipa** onto the Sideloadly window.
+2. Drag **DashLens-unsigned.ipa** onto the Sideloadly window.
 3. Type your **Apple ID email** and click **Start**.
 4. Enter your Apple ID **password** when Sideloadly asks. Then a **6-digit code** appears on your iPhone (or another Apple device signed in to that Apple ID): type it in quickly.
 5. Wait for "Done". The DashLens icon (a white ring with a green dot) is now on your home screen.
@@ -104,3 +104,12 @@ iPhone can't draw over the Dasher app. Instead, a shortcut takes a screenshot an
 **5. Anything else.** Crashes, screens that look wrong, or things that confused you.
 
 Everything stays on your phone. DashLens has no account and uploads nothing. The money and tax numbers are estimates, not tax advice.
+
+## New in 4.2.0: what to test
+1. Run an offer through the shortcut and check the card shows the gas, wear, net pay, time and miles lines. Do the numbers match what you would work out by hand?
+2. If you see a shop & deliver offer ("4 items"), check the item count is read and the time line shows shopping and checkout.
+3. If you see pay with a "+", check it is marked and the card says it was graded at that minimum.
+4. In Offers, tap **SHARE** on a row and check the picture card looks right in the share sheet.
+5. In Settings, try **Load typical Dasher assumptions**, then change a value and check the next offer uses it.
+
+Your old history and settings should still be there after updating. If anything is missing, tell us what the app showed before and after.

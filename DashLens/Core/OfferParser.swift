@@ -11,6 +11,8 @@ struct Offer {
     let pickups: Int
     let merchants: [String]
     let tipsIncluded: Bool
+    var items: Int = 0            // shop & deliver item count ("4 items"), 0 when not shown
+    var payPlus: Bool = false     // pay shown as "$22.00+": a minimum, the real pay can be higher
 
     var merchant: String { merchants.first ?? "" }
 }
@@ -22,6 +24,8 @@ enum OfferParser {
     private static let minRe = rx(#"(\d+)\s*min"#)
     private static let shownMinRe = rx(#"^\D{0,3}(\d+)\s*min"#)
     private static let countRe = rx(#"(\d+)\s*(?:pickups?|stops?)\b"#)
+    private static let itemsRe = rx(#"(\d+)\s+items?\b"#)
+    private static let plusRe = rx(#"\$\s?\d{1,3}(?:\.\d{1,2})?\s*\+"#)
     private static let deliverByRe = rx(#"deliver\s+by\s+(\d{1,2}):(\d{2})\s*([ap])?\.?m?"#)
     private static let pickupLabelRe = rx(#"^pick-?up(\s+\d+)?$"#)
     private static let notMerchantRe = rx(#"^(customer\s+drop-?off|drop-?off.*|deliver.*|accept.*|decline.*)$"#)
@@ -122,7 +126,11 @@ enum OfferParser {
 
         if pay <= 0 || miles <= 0 { return nil }
         let tips = all.ci("incl. tip") || all.ci("guaranteed")
+        let plusHere = plusRe.hasMatch(t[pick])
+        let plusNext = pick + 1 < t.count && t[pick + 1].trimmingCharacters(in: .whitespaces) == "+"
+        let rawItems = Int(itemsRe.firstGroups(in: all)?[1] ?? "") ?? 0
+        let items = (rawItems >= 1 && rawItems <= 200) ? rawItems : 0
         return Offer(pay: pay, miles: miles, shownMinutes: shown, windowMin: windowMinutes(t, now: now),
-                     pickups: pickups, merchants: merchants, tipsIncluded: tips)
+                     pickups: pickups, merchants: merchants, tipsIncluded: tips, items: items, payPlus: plusHere || plusNext)
     }
 }

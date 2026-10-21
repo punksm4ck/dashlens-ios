@@ -24,11 +24,16 @@ enum Prefs {
         Field(key: "min_pay", label: "Hard filter: minimum offer pay $ (0 = off)", def: 0, group: gRules),
         Field(key: "max_mi", label: "Hard filter: maximum offer miles (0 = off)", def: 0, group: gRules),
         Field(key: "max_stops", label: "Hard filter: maximum pickups / stops (0 = off)", def: 0, group: gRules),
-        Field(key: "cost_mi", label: "Vehicle cost per mile ($)", def: 0.30, group: gCost),
+        Field(key: "gas_price", label: "Gas price ($ per gallon)", def: 3.87, group: gCost),
+        Field(key: "mpg", label: "Your car's fuel economy (mpg)", def: 25, group: gCost),
+        Field(key: "wear_mi", label: "Wear and tear ($ per mile: tires, maintenance, depreciation)", def: 0.18, group: gCost),
+        Field(key: "cost_mi", label: "Flat vehicle cost per mile ($) - used only when itemizing is turned off", def: 0.30, group: gCost),
         Field(key: "empty_pct", label: "Empty miles coming back (% of offer miles)", def: 20, group: gCost),
         Field(key: "wait_min", label: "Merchant wait per pickup (min)", def: 7, group: gCost),
         Field(key: "extra_pickup_min", label: "Extra overhead per additional pickup (min)", def: 5, group: gCost),
         Field(key: "dropoff_min", label: "Drop-off handoff time (min)", def: 3, group: gCost),
+        Field(key: "shop_min_item", label: "Shop & deliver: shopping time per item (min)", def: 1.5, group: gCost),
+        Field(key: "checkout_min", label: "Shop & deliver: checkout time per store (min)", def: 5, group: gCost),
         Field(key: "offer_speed_mph", label: "Avg speed on an order, before DashLens has learned yours (mph)", def: 22, group: gCost),
         Field(key: "speed_mph", label: "Avg speed for the return drive (mph)", def: 25, group: gCost),
         Field(key: "irs_rate", label: "IRS business mileage rate ($/mi) - check each Jan/Jul", def: 0.76, group: gMoney),
@@ -43,11 +48,25 @@ enum Prefs {
         Sw(key: "overlay_compact", label: "Compact offer card (verdict and key numbers only)", def: false),
         Sw(key: "fb_haptic", label: "Vibrate on verdict (1 buzz take, 2 maybe, 3 decline)", def: false),
         Sw(key: "fb_voice", label: "Speak the verdict aloud", def: false),
+        Sw(key: "itemize_cost", label: "Vehicle cost = gas (mpg and gas price) + wear and tear, shown line by line (off = one flat $/mile)", def: true),
+        Sw(key: "overlay_math", label: "Show the full math on the offer card (gas, wear, net pay, time, miles counted)", def: true),
         Sw(key: "use_actual_cost", label: "Use my actual gas + maintenance cost per mile (from logged expenses) in offer analysis", def: false),
         Sw(key: "income_manual_only", label: "Income = only what I log by hand (ignore accepted-offer estimates)", def: false),
         Sw(key: "method_actual", label: "Tax method: actual vehicle expenses instead of standard mileage", def: false),
         Sw(key: "basis_online", label: "Mileage basis: all online miles instead of on-order miles only", def: false),
     ]
+
+    /// Typical Dasher numbers for the "Load typical Dasher assumptions" button. Minimum $/hr and $/mile are not touched.
+    static let typical: [(String, Double)] = [
+        ("gas_price", 3.87), ("mpg", 25), ("wear_mi", 0.18), ("shop_min_item", 1.5), ("checkout_min", 5),
+        ("dropoff_min", 5), ("empty_pct", 50), ("offer_speed_mph", 25), ("speed_mph", 25),
+    ]
+
+    static func loadTypical() {
+        for (k, v) in typical { setNum(k, v) }
+        setBool("itemize_cost", true)
+        Calibration.reset()
+    }
 
     private static var ud: UserDefaults { UserDefaults.standard }
 

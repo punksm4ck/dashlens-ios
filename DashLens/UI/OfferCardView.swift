@@ -15,23 +15,47 @@ struct OfferCardView: View {
         .frame(maxWidth: .infinity)
     }
 
+    /// The line-by-line math (gas, wear, net pay, time, miles counted), or the short reasons when it is switched off.
+    @ViewBuilder private func detail(_ o: Offer, _ a: Analysis) -> some View {
+        if Prefs.bool("overlay_math", true) {
+            ForEach(Array(a.hard.enumerated()), id: \.offset) { _, h in
+                Text("• " + h).font(.system(size: 11)).foregroundColor(Theme.red)
+            }
+            ForEach(Array(a.mathLines.enumerated()), id: \.offset) { _, line in
+                let net = line.hasPrefix("Net pay")
+                Text(line)
+                    .font(.system(size: 11, weight: net ? .bold : .regular))
+                    .foregroundColor(net ? Color.white : Color(hex: 0xD0D3D8))
+            }
+            if o.payPlus {
+                Text("Graded at the + minimum: real pay may be higher.").font(.system(size: 11)).foregroundColor(Theme.amber)
+            }
+        } else {
+            ForEach(Array(a.reasons.prefix(4).enumerated()), id: \.offset) { _, r in
+                Text("• " + r).font(.system(size: 11)).foregroundColor(Color(hex: 0xD0D3D8))
+            }
+        }
+    }
+
     var body: some View {
         if let o = offer, let a = analysis {
             let accent = Theme.verdictColor(a.verdict.rawValue)
+            let plus = o.payPlus ? "+" : ""
             VStack(alignment: .leading, spacing: 6) {
                 HStack {
                     Text(a.verdict.title).font(.system(size: 22, weight: .bold)).foregroundColor(accent)
                     Spacer()
-                    Text(Fmt.f("$%.0f/hr net", a.netHr)).font(.system(size: 19, weight: .bold)).foregroundColor(accent)
+                    Text(Fmt.f("$%.0f/hr net", a.netHr) + plus).font(.system(size: 19, weight: .bold)).foregroundColor(accent)
                 }
+                Text(a.floorLine).font(.system(size: 11)).foregroundColor(Theme.muted)
                 if !o.merchant.isEmpty {
                     let extra = o.pickups > 1 ? "  +\(o.pickups - 1) more" : ""
                     let tips = o.tipsIncluded ? "   ·   tips included" : ""
                     Text(o.merchant + extra + tips).font(.system(size: 13, weight: .bold)).foregroundColor(Theme.text)
                 }
                 HStack {
-                    stat("PAY", Fmt.f("$%.2f", o.pay))
-                    stat("$ / MILE", Fmt.f("$%.2f", a.perOfferMile))
+                    stat("PAY", Fmt.f("$%.2f", o.pay) + plus)
+                    stat("NET $ / MI", Fmt.f("$%.2f", a.netPerOfferMile) + plus, a.netPerOfferMile >= 0 ? Color.white : Theme.red)
                     stat("MILES", Fmt.f("%.1f", o.miles))
                     stat("ORDER TIME", "~\(Int(a.tripMin)) min")
                 }
@@ -42,9 +66,7 @@ struct OfferCardView: View {
                         stat("WHOLE CYCLE", "~\(Int(a.totalMin)) min")
                         if o.windowMin > 0 { stat("DELIVER BY", "in \(Int(o.windowMin)) min") }
                     }
-                    ForEach(Array(a.reasons.prefix(4).enumerated()), id: \.offset) { _, r in
-                        Text("• " + r).font(.system(size: 11)).foregroundColor(Color(hex: 0xD0D3D8))
-                    }
+                    detail(o, a)
                 }
                 if !a.merchantLine.isEmpty {
                     Text(a.merchantLine).font(.system(size: 11, weight: .bold)).foregroundColor(Color(hex: 0x7FB2FF))

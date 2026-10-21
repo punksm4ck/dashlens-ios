@@ -45,6 +45,8 @@ struct SettingsView: View {
     @State private var testResult: TestResult?
     @State private var diag = ""
     @State private var presetMsg = ""
+    @State private var showTypical = false
+    @State private var sharing: SharePayload?
 
     private var groups: [String] {
         var out: [String] = []
@@ -67,6 +69,13 @@ struct SettingsView: View {
                     BigButton(title: "Easygoing") { model.preset(14, 1.0); presetMsg = "Easygoing: min $14/hr and $1.00 per real mile" }
                 }
                 if !presetMsg.isEmpty { Caption(presetMsg) }
+            }
+            .card()
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Costs and time: typical Dasher").font(.headline).foregroundColor(Theme.text)
+                Caption("Not sure what to enter? Load a typical set of gas, wear, shopping and drop-off numbers, then change what does not match you.")
+                BigButton(title: "Load typical Dasher assumptions") { showTypical = true }
             }
             .card()
 
@@ -95,6 +104,10 @@ struct SettingsView: View {
                 Text("Diagnostics").font(.headline).foregroundColor(Theme.text)
                 Caption("If the offer card is wrong, copy the text DashLens read and send it to whoever is tuning the app.")
                 BigButton(title: "Preview the offer card") { showSample = true }
+                BigButton(title: "Share a sample offer card (test)") {
+                    let s = OfferEngine.sample()
+                    sharing = ShareCard.payload(s.0, s.1)
+                }
                 PhotosPicker(selection: $pickerItem, matching: .images) {
                     Text("Test with a saved Dasher screenshot").font(.body.weight(.semibold)).frame(maxWidth: .infinity)
                         .padding(.vertical, 12).foregroundColor(Theme.text)
@@ -125,6 +138,22 @@ struct SettingsView: View {
             .card()
         }
         .sheet(isPresented: $showSample) { SampleCardView() }
+        .sheet(item: $sharing) { payload in
+            ActivityView(items: [payload.url]).presentationDetents([.medium, .large])
+        }
+        .alert("Load typical Dasher assumptions?", isPresented: $showTypical) {
+            Button("Load") {
+                Prefs.loadTypical()
+                model.reload()
+                NotificationCenter.default.post(name: .dashLensDataChanged, object: nil)
+                presetMsg = "Typical Dasher assumptions loaded"
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text(cat("This replaces your gas price, mpg, wear and tear, shopping and checkout time, drop-off time, empty-return miles and speed with typical values ",
+                     "(gas $3.87/gal, 25 mpg, wear $0.18/mi, 1.5 min per shop item, 5 min checkout, 5 min drop-off, half a trip back empty, 25 mph). ",
+                     "Your minimum $/hr and $/mile are not changed."))
+        }
         .sheet(item: $testResult) { r in TestResultView(outcome: r.outcome) }
         .onChange(of: pickerItem) { _, item in
             guard let item = item else { return }
