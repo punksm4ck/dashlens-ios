@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 @main
 struct DashLensApp: App {
@@ -8,6 +9,8 @@ struct DashLensApp: App {
     init() {
         // If iOS relaunched the app in the middle of a shift (after a memory kill), pick the shift back up.
         Tracker.shared.restore()
+        UNUserNotificationCenter.current().delegate = NotifDelegate.shared
+        LiveReceiver.shared.start()
     }
 
     var body: some Scene {
@@ -22,6 +25,7 @@ struct DashLensApp: App {
                 OfferLog.resolveStale()
                 Summaries.catchUp()
                 Notifier.scheduleWeekly()
+                LiveReceiver.shared.start()
             } else if newPhase == .background {
                 Tracker.shared.flush()
             }

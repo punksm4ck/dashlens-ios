@@ -197,3 +197,25 @@ Test it without a real offer: Home > **Test with a saved Dasher screenshot**, an
 
 ## License
 Released under the [MIT License](LICENSE).
+
+---
+
+## Live detection (beta): the verdict appears over Dasher with no taps
+
+iPhone still cannot draw on top of another app, so this is the closest legitimate equivalent. **DashLens Live** is a
+screen-broadcast extension (the same mechanism screen-recording apps use). While it runs it looks at the lower part of the
+screen about twice a second. When the Dasher offer screen (Accept button, pay, miles) appears, it reads the text on the
+phone, hands it to DashLens over loopback, and DashLens posts the TAKE / MAYBE / DECLINE verdict as a **banner on top of Dasher**
+within about a second. It also logs the offer like the Shortcut route does.
+
+**Each shift:** Home > **Start shift + live detection** > choose **DashLens Live** > **Start Broadcast**. Stop with the red
+recording indicator > Stop Broadcast.
+
+**What to know**
+- iOS shows a red recording indicator the whole time, and it costs battery. Plug in.
+- A shift must be running (the background location session keeps DashLens alive to receive offers). The Home button starts both.
+- Banners need notifications allowed. A **Driving Focus** or Do Not Disturb can hide them: allow DashLens in that Focus.
+- iOS caps broadcast extensions at a small amount of memory, so it reads only the lower 62% of the screen. If iOS stops the
+  broadcast, start it again.
+- Whether Dasher behaves differently while the screen is being captured is untested. Report anything odd.
+- Back Tap and the Shortcut route still work and need none of this.

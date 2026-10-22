@@ -9,14 +9,16 @@ settings:
     SWIFT_VERSION: "5.0"
     IPHONEOS_DEPLOYMENT_TARGET: "17.0"
     TARGETED_DEVICE_FAMILY: "1"
-    MARKETING_VERSION: "4.2.0"
-    CURRENT_PROJECT_VERSION: "6"
+    MARKETING_VERSION: "4.3.0"
+    CURRENT_PROJECT_VERSION: "7"
 targets:
   DashLens:
     type: application
     platform: iOS
     sources:
       - path: DashLens
+    dependencies:
+      - target: DashLensBroadcast
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.dashlens
@@ -43,3 +45,26 @@ targets:
         NSLocationWhenInUseUsageDescription: DashLens measures the miles you drive during a shift.
         NSLocationAlwaysAndWhenInUseUsageDescription: DashLens keeps measuring miles with the screen off or while another app (like Dasher) is open. Location never leaves your phone.
         NSCameraUsageDescription: Take a photo of a receipt to attach to an expense.
+        NSLocalNetworkUsageDescription: DashLens receives offers from its own screen-reading extension on this phone. Nothing is sent over the network.
+  DashLensBroadcast:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: DashLensBroadcast
+      - path: DashLens/Core/ScreenText.swift
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.dashlens.broadcast
+        PRODUCT_NAME: DashLensBroadcast
+        SKIP_INSTALL: YES
+        ENABLE_PREVIEWS: NO
+    info:
+      path: DashLensBroadcast/Info.plist
+      properties:
+        CFBundleDisplayName: DashLens Live
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.broadcast-services-upload
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).SampleHandler
+          RPBroadcastProcessMode: RPBroadcastProcessModeSampleBuffer

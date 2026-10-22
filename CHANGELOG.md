@@ -5,6 +5,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [4.3.0] - 2026-10-22
+
+### Added
+- **DashLens Live (beta)**: a screen-broadcast extension reads the Dasher offer screen on the phone and DashLens shows the verdict as a banner over Dasher, with no taps. New Home card "Start shift + live detection".
+- Banners also show while DashLens is open.
+
+### Security
+- The app-to-extension link is loopback-only UDP and every datagram is size, shape, length and rate checked. See SECURITY.md.
+- Today's Numbers shortcut requires the phone to be unlocked. The hotspot Maps link uses https.
+
 ## [4.2.0] - 2026-10-20
 
 Brings the iPhone app to the same grading model as Android 4.2.0.

@@ -146,6 +146,9 @@ struct HomeView: View {
             }
             .card()
 
+            LiveCard()
+
+
             BigButton(title: "Offer card setup (Back Tap / Action Button)", prominent: true, tint: Theme.blue) { showSetup = true }
 
             PhotosPicker(selection: $pickerItem, matching: .images) {

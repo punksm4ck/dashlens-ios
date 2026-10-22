@@ -5,3 +5,4 @@ DerivedData/
 DashLens/Info.plist
 Payload/
 *.ipa
+DashLensBroadcast/Info.plist
