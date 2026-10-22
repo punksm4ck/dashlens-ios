@@ -33,11 +33,12 @@ struct BroadcastPicker: UIViewRepresentable {
     }
 }
 
-/// Home card: starts a shift and the DashLens Live broadcast in one tap.
+/// Home card: starts a shift and the DashLens Live broadcast in one tap, with a status report and self-tests.
 struct LiveCard: View {
     @ObservedObject private var tracker = Tracker.shared
     @State private var box = PickerBox()
     @State private var message = ""
+    @State private var showStatus = false
 
     private var capturing: Bool { UIScreen.main.isCaptured }
 
@@ -59,8 +60,40 @@ struct LiveCard: View {
             }
             if !message.isEmpty { Text(message).font(.footnote.weight(.semibold)).foregroundColor(Theme.amber) }
             Caption("In the list that opens, choose DashLens Live and tap Start Broadcast. To stop, tap the red recording indicator, then Stop Broadcast.")
+
+            DisclosureGroup(isExpanded: $showStatus) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(LiveStats.shared.report())
+                        .font(.system(size: 10, design: .monospaced))
+                        .foregroundColor(Theme.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 8) {
+                        BigButton(title: "Self-test") {
+                            LiveReceiver.shared.start()
+                            LiveReceiver.selfTest()
+                            message = "Self-test sent: a banner should appear in a moment."
+                        }
+                        BigButton(title: "Banner in 5 s") {
+                            LiveReceiver.delayedTestBanner()
+                            message = "Switch to another app now. A banner appears in 5 seconds."
+                        }
+                    }
+                    BigButton(title: "Copy live report", prominent: true, tint: Theme.blue) {
+                        LiveStats.shared.refreshNotif {
+                            UIPasteboard.general.string = LiveStats.shared.report()
+                            message = "Report copied. Paste it into your message to the developer."
+                        }
+                    }
+                    Caption("If live detection does not work, tap Copy live report and send it. It shows exactly where the chain stopped.")
+                }
+                .padding(.top, 6)
+            } label: {
+                Text("Live status and tests").font(.subheadline.weight(.semibold)).foregroundColor(Theme.text)
+            }
+            .tint(Theme.green)
         }
         .card()
+        .onAppear { LiveStats.shared.refreshNotif {} }
     }
 
     private func startLive() {

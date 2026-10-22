@@ -10,6 +10,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 ### Added
 - **DashLens Live (beta)**: a screen-broadcast extension reads the Dasher offer screen on the phone and DashLens shows the verdict as a banner over Dasher, with no taps. New Home card "Start shift + live detection".
 - Banners also show while DashLens is open.
+- Live status block, Self-test, Banner in 5 s and Copy live report on the Home card, plus a heartbeat from the broadcast extension, so a remote tester can show exactly where the chain stopped.
 
 ### Security
 - The app-to-extension link is loopback-only UDP and every datagram is size, shape, length and rate checked. See SECURITY.md.

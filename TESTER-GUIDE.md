@@ -113,3 +113,23 @@ Everything stays on your phone. DashLens has no account and uploads nothing. The
 5. In Settings, try **Load typical Dasher assumptions**, then change a value and check the next offer uses it.
 
 Your old history and settings should still be there after updating. If anything is missing, tell us what the app showed before and after.
+
+---
+
+## Testing Live detection (beta builds only)
+
+Live detection shows the TAKE / MAYBE / DECLINE verdict as a banner on top of Dasher with no taps. It is new, so please
+test it in this order and send me the report. It takes about 3 minutes and does not need a real offer for steps 1 to 3.
+
+1. **Banner test.** Open DashLens > Home > **Live detection** > **Live status and tests** > **Banner in 5 s**. Switch to
+   any other app. A DashLens banner should appear at the top within 5 seconds. (If not: Settings > Notifications > DashLens
+   must be on, and a Focus such as Driving or Do Not Disturb must allow DashLens.)
+2. **Self-test.** In the same place tap **Self-test**. A banner for "Self-test Deli" should appear.
+3. **Start it.** Tap **Start shift + live detection**, pick **DashLens Live** in the list, tap **Start Broadcast**, wait for the
+   3-2-1, then go to the Dasher app. A red recording indicator shows while it runs. That is normal.
+4. **Wait for a real offer** (or ask a friend to show you a Dasher offer screen). The banner should appear within about
+   a second of the offer showing.
+5. **Send the report, whatever happened.** Back in DashLens open **Live status and tests** and tap **Copy live report**.
+   Paste it into your message to me, and tell me what you saw (banner yes or no, how fast, anything odd in Dasher).
+
+Stop the broadcast afterwards: tap the red recording indicator, then Stop Broadcast.
