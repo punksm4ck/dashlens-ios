@@ -95,6 +95,7 @@ struct TodayIntent: AppIntent {
     static let title: LocalizedStringResource = "Today's Numbers"
     static let description = IntentDescription("Today's estimated income, accepted offers, online time and miles.")
     static let openAppWhenRun: Bool = false
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresLocalDeviceAuthentication
 
     func perform() async throws -> some IntentResult & ReturnsValue<String> & ProvidesDialog {
         let line = ShiftActions.todayLine()

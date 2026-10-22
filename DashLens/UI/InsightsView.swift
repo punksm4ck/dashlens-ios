@@ -91,7 +91,7 @@ struct InsightsView: View {
                 if hot.isEmpty { Caption("Needs accepted offers recorded while a shift is running (GPS).") }
                 ForEach(hot) { h in
                     BigButton(title: "\(h.count) accepted · avg \(Finance.money(h.avgPay)) · open in Maps") {
-                        if let u = URL(string: "http://maps.apple.com/?ll=\(h.lat),\(h.lon)&q=Hotspot") { openURL(u) }
+                        if let u = URL(string: "https://maps.apple.com/?ll=\(h.lat),\(h.lon)&q=Hotspot") { openURL(u) }
                     }
                 }
             }
